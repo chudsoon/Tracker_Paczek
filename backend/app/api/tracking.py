@@ -48,7 +48,7 @@ def get_tracking_status(tracking_number: str, db: Session = Depends(get_db)):
         return get_inpost_status(tracking.number)
     raise HTTPException(400, "Unsupported carrier")
 
-w
+
     
 
   

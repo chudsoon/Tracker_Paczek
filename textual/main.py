@@ -7,9 +7,12 @@ from textual import events
 from widgets.tracking_list import TrackingList
 from widgets.user_info import UserInfoPanel
 
+from pathlib import Path
+
 import httpx
 
 API_URL = "http://localhost:8000"
+USER_FILE = Path.home() / ".tracker_user"
 
 # --- Ekran: lista przeysłek --- 
 
@@ -81,7 +84,11 @@ class TrackerApp(App):
     SUB_TITLE = "Konsolowy interfejs Textual"
     
     def on_mount(self) -> None:
-        self.push_screen(TrackingListView())
+        if USER_FILE.exists():
+            self.push_screen(TrackingListView())
+        else:
+            from widgets.login_screen import LoginScreen
+            self.push_screen(LoginScreen())
     
 
 

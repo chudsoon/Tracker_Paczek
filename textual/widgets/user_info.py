@@ -37,12 +37,13 @@ class UserInfoPanel(Static):
             if USER_FILE.exists():
                 USER_FILE.unlink()
                 self.app.notify("Wylogowano", timeout=2)
-                #odświez widget
-                self.query_one("#userinfo-text", Static).update(self.get_user_info_text())
+                
+                # Goes to the login screen
+                from widgets.login_screen import LoginScreen
+                self.app.pop_screen() # removes TrackingListView
+                self.app.push_screen(LoginScreen())
             else:
-                self.app.notify("Nie byłeś zalogowany", timeout=2)    
-            self.query_one("#userinfo-text", Static).update(self.get_user_info_text())    
-        
+                self.app.notify("Nie byłeś zalogowany", timeout=2)        
         
         
         
