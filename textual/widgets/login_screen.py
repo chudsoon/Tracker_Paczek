@@ -14,6 +14,7 @@ class LoginScreen(Screen):
         yield Static("Zaloguj się", classes="title")
         yield Input(placeholder="Podaj email...", id="email_input")
         yield Button("Zaloguj", id="login_btn")
+        yield Button("Nie masz konta? Zarejestruj się", id="go_register")
         yield Footer()
     
     def on_button_pressed(self, event: Button.Pressed):
@@ -39,3 +40,7 @@ class LoginScreen(Screen):
                 
             except Exception as  e:
                 self.app.notify(f"Błąd logowania: {e}", severity="error")
+        elif event.button.id == "go_register":
+            from widgets.registration_screen import RegisterScreen
+            self.app.pop_screen()
+            self.app.push_screen(RegisterScreen())
