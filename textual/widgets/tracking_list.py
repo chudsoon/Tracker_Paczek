@@ -1,24 +1,37 @@
 from textual.app import ComposeResult
 from textual.widgets import Header, Footer, Static, Button
 from textual.screen import Screen
+from pathlib import Path
 
+import json
 import httpx
 
 
 API_URL = "http://localhost:8000"
 
+USER_FILE  = Path(".tracker_user")
+
 class TrackingList(Static):
     """Widget do wyświetlania listy przesyłek."""
+  
 
-    
     def on_mount(self):
         self.load()
+        
+    def get_user_id(self):
+        if USER_FILE.exists():
+            with USER_FILE.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+                return int(data.get("id"))
+        return None
+        
     
     def load(self):
         self.update("") # wyczyść
+    
         
         try:
-            resp = httpx.get(f"{API_URL}/trackings/", params={"user_id": 1})
+            resp = httpx.get(f"{API_URL}/trackings/", params={"user_id": self.get_user_id()})
             data = resp.json()
             if not data:
                 self.update("Brak przesyłek.")
