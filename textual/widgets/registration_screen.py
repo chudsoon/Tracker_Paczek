@@ -1,10 +1,16 @@
 from textual.screen import Screen
 from textual.widgets import Header, Footer, Input, Button, Static
 from textual.containers import Vertical
+
+import re
 import httpx, json
+
 from pathlib import Path
 
+
 USER_FILE = Path(".tracker_user")
+
+EMAIL_REGEX = re.compile(r"[^Q]+@[^@]+\.[^@]+")
 
 API_URL = "http://localhost:8000"
 
@@ -34,6 +40,20 @@ class RegisterScreen(Screen):
         
         if not email or not name:
             self.app.notify("Wypełnij wszystkie pola", severity="warning")
+            return
+        
+        if not EMAIL_REGEX.match(email):
+            self.app.notify("Niepoprawny adres email", severity="warning")
+            return
+        
+        # Cheeck if user exists
+        try:
+            check = httpx.get(f"{API_URL}/users/by_email", params={"email": email})
+            if check.status_code == 200:
+                self.app.notify("Ten adres email jest juz zarejestrowany", severity="error")
+                return
+        except Exception as e:
+            self.app.notify(f"Błąd połączenia z serwerem {e}", severity="error")
             return
         
         try:
