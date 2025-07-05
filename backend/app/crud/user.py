@@ -1,9 +1,14 @@
 from sqlalchemy.orm import Session
 from app.models.user import User
 from app.schemas.user import UserCreate
+from fastapi import HTTPException
 
 def create_user(db: Session, user: UserCreate):
     db_user = User(email=user.email, full_name=user.full_name)
+   
+    if db_user.email == user.email:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

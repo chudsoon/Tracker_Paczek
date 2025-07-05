@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 class UserCreate(BaseModel):
     email: str
@@ -6,7 +6,7 @@ class UserCreate(BaseModel):
     
 class UserOut(BaseModel):
     id: int
-    email: str
+    email: EmailStr
     full_name: str
     
     class Config:
