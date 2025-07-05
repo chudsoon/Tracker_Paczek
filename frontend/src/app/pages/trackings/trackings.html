@@ -1,0 +1,20 @@
+
+<h2>Dodaj przesyłkę</h2>
+<form (ngSumbmit)="addTracking()" #trackingForm="ngForm">
+    <label>
+        Numer przesyłki:
+        <input type="text" [(ngModel)]="newTracking.number" name="number" required />
+    </label>
+    <label>
+        Kurier:
+        <input type="text" [(ngModel)]="newTracking.carrier" name="carrier" required />
+    </label>
+    <button type="submit">Dodaj</button>
+</form>
+
+<h2>Lista przesyłek</h2>
+<ul>
+    <li *ngFor="let t of trackings">
+        <strong>{{ t.number }}</strong> ({{ t.carrier }})
+    </li>
+</ul>
