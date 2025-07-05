@@ -5,7 +5,7 @@ import httpx
 import json
 from pathlib import Path
 
-USER_FILE = Path.home() / ".tracker_user"
+USER_FILE = Path(".tracker_user")
 API_URL = "http://localhost:8000"
 
 class LoginScreen(Screen):
@@ -37,6 +37,7 @@ class LoginScreen(Screen):
                 # Go to the main view
                 from main import TrackingListView
                 self.app.push_screen(TrackingListView())
+                
                 
             except Exception as  e:
                 self.app.notify(f"Błąd logowania: {e}", severity="error")

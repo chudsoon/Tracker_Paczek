@@ -4,7 +4,8 @@ from textual.containers import Vertical
 import httpx, json
 from pathlib import Path
 
-USER_FILE = Path.home() / ".tracker_user"
+USER_FILE = Path(".tracker_user")
+
 API_URL = "http://localhost:8000"
 
 class RegisterScreen(Screen):

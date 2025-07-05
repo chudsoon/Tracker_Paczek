@@ -5,7 +5,7 @@ import json
 import httpx
 from pathlib import Path
 
-USER_FILE = Path.home() / ".tracker_user" # jak w CLI
+USER_FILE = Path(".tracker_user")
 
 class UserInfoPanel(Static):
     def compose(self) -> ComposeResult:

@@ -12,7 +12,7 @@ from pathlib import Path
 import httpx
 
 API_URL = "http://localhost:8000"
-USER_FILE = Path.home() / ".tracker_user"
+USER_FILE = Path(".tracker_user")
 
 # --- Ekran: lista przeysłek --- 
 
