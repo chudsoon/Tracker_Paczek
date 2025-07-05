@@ -6,8 +6,7 @@ from fastapi import HTTPException
 def create_user(db: Session, user: UserCreate):
     db_user = User(email=user.email, full_name=user.full_name)
    
-    if db_user.email == user.email:
-        raise HTTPException(status_code=400, detail="Email already registered")
+   
     
     db.add(db_user)
     db.commit()
