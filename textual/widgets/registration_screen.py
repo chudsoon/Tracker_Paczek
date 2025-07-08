@@ -19,6 +19,7 @@ class RegisterScreen(Screen):
         yield Header()
         yield Static("Rejestracja", classes="title")
         yield Input(placeholder="Email", id="email_input")
+        yield Input(placeholder="Hasło", id="password_input")
         yield Input(placeholder="Imię i nazwisko", id="name_input")
         yield Button("Zarejestruj", id="register_btn")
         yield Button("Mam juz konto", id="go_login")
@@ -36,15 +37,18 @@ class RegisterScreen(Screen):
     
     def register(self):
         email = self.query_one("#email_input", Input).value.strip()
+        password = self.query_one("#password_input", Input).value.strip()
         name = self.query_one("#name_input", Input).value.strip()
         
-        if not email or not name:
+        if not email or not name or not password:
             self.app.notify("Wypełnij wszystkie pola", severity="warning")
             return
         
         if not EMAIL_REGEX.match(email):
             self.app.notify("Niepoprawny adres email", severity="warning")
             return
+        
+    
         
         # Cheeck if user exists
         try:
@@ -57,7 +61,7 @@ class RegisterScreen(Screen):
             return
         
         try:
-            resp = httpx.post(f"{API_URL}/users/", json={"email": email, "full_name": name})
+            resp = httpx.post(f"{API_URL}/users/", json={"email": email, "full_name": name, "password": password})
             if resp.status_code != 200:
                 self.app.notify("Rejestracja nieudana", severity="error")
                 return
