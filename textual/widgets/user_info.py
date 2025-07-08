@@ -37,8 +37,8 @@ class UserInfoPanel(Static):
         
     def on_button_pressed(self, event: Button.Pressed):
         if event.button.id == "logout":
-            if USER_FILE.exists():
-                USER_FILE.unlink()
+            if TOKEN_FILE.exists():
+                TOKEN_FILE.unlink()
                 self.app.notify("Wylogowano", timeout=2)
                 
                 # Goes to the login screen
