@@ -6,6 +6,7 @@ from app.crud.user import create_user, get_users, authenticate_user
 from app.models.user import User
 from app.db import Base, engine
 from app.utils.jwt import create_access_token
+from app.auth import get_current_user
 
 
 
@@ -29,8 +30,12 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
 @router.post("/login")
 def login(data: LoginRequest, db: Session = Depends(get_db)):
     user = authenticate_user(db, data.email, data.password)
-    token = create_access_token(data={"sub": user.email})
+    token = create_access_token(data={"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
+
+@router.get("/me")
+def get_me(current_user: User = Depends(get_current_user)):
+    return current_user
 
 @router.get("/", response_model=list[UserOut])
 def list_user(db: Session = Depends(get_db)):

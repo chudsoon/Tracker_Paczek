@@ -13,34 +13,43 @@ class LoginScreen(Screen):
         yield Header()
         yield Static("Zaloguj się", classes="title")
         yield Input(placeholder="Podaj email...", id="email_input")
+        yield Input(placeholder="Podaj hasło...", id="password_input", password=True)
         yield Button("Zaloguj", id="login_btn")
+        yield Static("", id="message")
         yield Button("Nie masz konta? Zarejestruj się", id="go_register")
         yield Footer()
     
-    def on_button_pressed(self, event: Button.Pressed):
+    async def on_button_pressed(self, event: Button.Pressed):
         if event.button.id == "login_btn":
-            email = self.query_one("#email_input", Input).value.strip()
-            if not email:
+            email_input = self.query_one("#email_input", Input).value.strip()
+            password_input = self.query_one("#password_input", Input).value.strip()
+            message = self.query_one("#message", Static)
+            
+            
+            if not email_input:
                 self.app.notify("Wpisz adres email", severity="warning")
                 return
             
             try:
-                resp = httpx.get(f"{API_URL}/users/by_email", params={"email": email})
-                if resp.status_code == 404:
-                    self.app.notify("Nie znaleziono uzytkownika", severity="error")
-                    return
+                async with httpx.AsyncClient() as client:
+                    resp = await client.post(f"{API_URL}/users/login", json={"email": email_input, "password": password_input})
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        headers = {"Authorization": f"Bearer {data['access_token']}"}
+                        response_me = httpx.get(f"{API_URL}/users/me", headers=headers)
+                        if response_me.status_code == 200:
+                            user_data = response_me.json()
+                            self.app.notify(f"Zalogowano {user_data['email']}", severity="success")
+                            from  main import TrackingListView
+                            self.app.push_screen(TrackingListView())
+                    else:
+                        message.update("Błąd logowania")
+                        
+            except Exception as e:
+                message.update(f"Błąd połączenia: {e}")
+                                        
                 
-                user = resp.json()
-                USER_FILE.write_text(json.dumps(user))
-                self.app.notify(f"Zalogowano jako {user['email']}", timeout=2)
-                
-                # Go to the main view
-                from main import TrackingListView
-                self.app.push_screen(TrackingListView())
-                
-                
-            except Exception as  e:
-                self.app.notify(f"Błąd logowania: {e}", severity="error")
+               
         elif event.button.id == "go_register":
             from widgets.registration_screen import RegisterScreen
             self.app.pop_screen()
