@@ -5,7 +5,8 @@ import json
 import httpx
 from pathlib import Path
 
-USER_FILE = Path(".tracker_user")
+TOKEN_FILE = Path("token.json")
+API_URL = "http://localhost:8000"
 
 class UserInfoPanel(Static):
     def compose(self) -> ComposeResult:
@@ -15,13 +16,15 @@ class UserInfoPanel(Static):
         
     def get_user_info_text(self) -> str:
         user_text = ""
-        if USER_FILE.exists():
-            data = json.load(open(USER_FILE))
-            email = data.get("email", "Nieznany")
-            user_id = data.get("id", "?")
-            user_text = f"[b]Uzytkownik:[/b] {email}\n[b]ID:[/b] {user_id}"
+        with open(TOKEN_FILE, "r") as file:
+            token = json.load(file)
+
+        resp_me = httpx.get(f"{API_URL}/users/me", headers={"Authorization": f"Bearer {token['access_token']}"})
+        if resp_me.status_code == 200:
+            data = resp_me.json()
+            user_text = f"[b]Uzytkownik:[/b] {data['email']}\n[b]ID: {str(data['id'])}[/b]"
         else:
-            user_text = "[italic red]NIe zalogowano[/italic red]"
+            user_text = f"[italic red]Nie zalogowano[/italic red]"
             
         # sprawdź, czy backend zyje
         

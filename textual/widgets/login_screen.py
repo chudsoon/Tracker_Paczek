@@ -5,7 +5,7 @@ import httpx
 import json
 from pathlib import Path
 
-USER_FILE = Path(".tracker_user")
+TOKEN_FILE = Path("token.json")
 API_URL = "http://localhost:8000"
 
 class LoginScreen(Screen):
@@ -35,6 +35,8 @@ class LoginScreen(Screen):
                     resp = await client.post(f"{API_URL}/users/login", json={"email": email_input, "password": password_input})
                     if resp.status_code == 200:
                         data = resp.json()
+                        with open(TOKEN_FILE, "w") as file:
+                            json.dump(data, file, indent=4)
                         headers = {"Authorization": f"Bearer {data['access_token']}"}
                         response_me = httpx.get(f"{API_URL}/users/me", headers=headers)
                         if response_me.status_code == 200:
