@@ -9,7 +9,7 @@ import httpx
 
 API_URL = "http://localhost:8000"
 
-USER_FILE  = Path(".tracker_user")
+TOKEN_FILE  = Path("token.json")
 
 class TrackingList(Static):
     """Widget do wyświetlania listy przesyłek."""
@@ -19,10 +19,12 @@ class TrackingList(Static):
         self.load()
         
     def get_user_id(self):
-        if USER_FILE.exists():
-            with USER_FILE.open("r", encoding="utf-8") as f:
-                data = json.load(f)
-                return int(data.get("id"))
+        if TOKEN_FILE.exists():
+            with TOKEN_FILE.open("r", encoding="utf-8") as f:
+                token = json.load(f)
+            resp_me = httpx.get(f"{API_URL}/users/me", headers={"Authorization": f"Bearer {token['access_token']}"})
+            data = resp_me.json()
+            return int(data['id'])
         return None
         
     

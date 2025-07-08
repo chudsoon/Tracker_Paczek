@@ -28,3 +28,9 @@ Button#logout {
     background: red;
     color: white;
 }
+Button#addTracking{
+    margin-top: 1;
+    width: 100%;
+    background: blue;
+    color: white;
+}

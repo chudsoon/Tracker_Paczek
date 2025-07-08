@@ -8,7 +8,7 @@ import httpx, json
 from pathlib import Path
 
 
-USER_FILE = Path(".tracker_user")
+TOKEN_FILE = Path("token.json")
 
 EMAIL_REGEX = re.compile(r"[^Q]+@[^@]+\.[^@]+")
 
@@ -66,11 +66,13 @@ class RegisterScreen(Screen):
                 self.app.notify("Rejestracja nieudana", severity="error")
                 return
             
-            user = resp.json()
-            USER_FILE.write_text(json.dumps(user))
+
             self.app.notify("Zarejestrowano pomyślnie", timeout=2)
+            
             from main import TrackingListView
+            from widgets.user_info import UserInfoPanel
             self.app.push_screen(TrackingListView())
+          
         
         except Exception as e:
             self.app.notify(f"Błąd: {e}", severity="error")            

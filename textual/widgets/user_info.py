@@ -12,19 +12,32 @@ class UserInfoPanel(Static):
     def compose(self) -> ComposeResult:
         info_text = self.get_user_info_text()
         yield Static(info_text, id="userinfo-text")
+        yield Button("Dodaj przesyłkę", id="addTracking")
         yield Button("Wyloguj", id="logout")
         
     def get_user_info_text(self) -> str:
         user_text = ""
-        with open(TOKEN_FILE, "r") as file:
-            token = json.load(file)
-
-        resp_me = httpx.get(f"{API_URL}/users/me", headers={"Authorization": f"Bearer {token['access_token']}"})
-        if resp_me.status_code == 200:
-            data = resp_me.json()
-            user_text = f"[b]Uzytkownik:[/b] {data['email']}\n[b]ID: {str(data['id'])}[/b]"
+        if TOKEN_FILE.exists():
+            try: 
+                with open(TOKEN_FILE, "r") as file:
+                    token = json.load(file)
+                access_token = token['access_token']
+            except(json.JSONDecodeError, KeyError):
+                access_token = None
         else:
-            user_text = f"[italic red]Nie zalogowano[/italic red]"
+            access_token = None
+            
+        
+        if access_token:
+            resp_me = httpx.get(f"{API_URL}/users/me", headers={"Authorization": f"Bearer {token['access_token']}"})
+            if resp_me.status_code == 200:
+                data = resp_me.json()
+                
+                user_text = f"[b]Uzytkownik:[/b] {data['email']}\n[b]ID: {str(data['id'])}[/b]"
+            else:
+                user_text = f"[italic red]Nie zalogowano[/italic red]"
+        else:
+            user_text = "Nie jesteś zalogowany"
             
         # sprawdź, czy backend zyje
         
@@ -36,7 +49,13 @@ class UserInfoPanel(Static):
         return f"{user_text}\n{status_line}"
         
     def on_button_pressed(self, event: Button.Pressed):
-        if event.button.id == "logout":
+        
+        if event.button.id == "addTracking":
+            from widgets.add_tracking import AddTrackingView
+            self.app.pop_screen()
+            self.app.push_screen(AddTrackingView())
+            
+        elif event.button.id == "logout":
             if TOKEN_FILE.exists():
                 TOKEN_FILE.unlink()
                 self.app.notify("Wylogowano", timeout=2)
