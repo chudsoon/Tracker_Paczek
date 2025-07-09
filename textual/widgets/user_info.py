@@ -9,11 +9,10 @@ TOKEN_FILE = Path("token.json")
 API_URL = "http://localhost:8000"
 
 class UserInfoPanel(Static):
-    def compose(self) -> ComposeResult:
-        info_text = self.get_user_info_text()
-        yield Static(info_text, id="userinfo-text")
-        yield Button("Dodaj przesyłkę", id="addTracking")
-        yield Button("Wyloguj", id="logout")
+    admin_btn = Button("Panel administracyjny", id="adminPanel")
+    admin_btn.display = False
+    
+  
         
     def get_user_info_text(self) -> str:
         user_text = ""
@@ -33,7 +32,11 @@ class UserInfoPanel(Static):
             if resp_me.status_code == 200:
                 data = resp_me.json()
                 
-                user_text = f"[b]Uzytkownik:[/b] {data['email']}\n[b]ID: {str(data['id'])}[/b]"
+                user_text = f"[b]Uzytkownik:[/b] {data['email']}\n[b]ID:[/b]{str(data['id'])}"
+                if data['is_admin'] == 1:
+        
+                    self.admin_btn.display = True
+                        
             else:
                 user_text = f"[italic red]Nie zalogowano[/italic red]"
         else:
@@ -55,6 +58,9 @@ class UserInfoPanel(Static):
             self.app.pop_screen()
             self.app.push_screen(AddTrackingView())
             
+        if event.button.id == "adminPanel":
+            pass
+            
         elif event.button.id == "logout":
             if TOKEN_FILE.exists():
                 TOKEN_FILE.unlink()
@@ -67,6 +73,11 @@ class UserInfoPanel(Static):
             else:
                 self.app.notify("Nie byłeś zalogowany", timeout=2)        
         
-        
+    def compose(self) -> ComposeResult:
+        info_text = self.get_user_info_text()
+        yield Static(info_text, id="userinfo-text")
+        yield Button("Dodaj przesyłkę", id="addTracking")
+        yield self.admin_btn
+        yield Button("Wyloguj", id="logout")
         
 

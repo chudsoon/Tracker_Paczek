@@ -38,8 +38,8 @@ def get_me(current_user: User = Depends(get_current_user)):
     return current_user
 
 @router.get("/", response_model=list[UserOut])
-def list_user(db: Session = Depends(get_db)):
-    return get_users(db)
+def list_user(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return get_users(db, current_user)
 
 @router.get("/by_email")
 def get_user_by_email(email: str, db: Session = Depends(get_db)):

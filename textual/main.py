@@ -8,6 +8,7 @@ from textual import events
 from widgets.tracking_list import TrackingList
 from widgets.user_info import UserInfoPanel
 from widgets.add_tracking import TrackingListView
+from widgets.user_info import UserInfoPanel
 import json
 from pathlib import Path
 
