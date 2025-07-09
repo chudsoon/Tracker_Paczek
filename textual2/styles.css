@@ -1,0 +1,60 @@
+Screen {
+    layout: horizontal;
+    background: #1e1e1e;
+    color: white;
+}
+
+UserPanel {
+    width: 30%;
+    padding: 2;
+    background: #121212;
+    border: tall #222222;
+}
+
+.user_name {
+    content-align: left top;
+    text-style: bold;
+    padding-bottom: 1;
+}
+
+.user_email, .user_role, .user_status {
+    padding-bottom: 1;
+    color: #cccccc;
+}
+
+#add_package, #admin_panel, #logout {
+    margin-top: 1;
+    background: #333333;
+    border: round #555555;
+    width: 100%;
+}
+
+PackageList {
+    width: 70%;
+    padding: 2;
+}
+
+.title {
+    text-style: bold;
+    padding-bottom: 1;
+    content-align: left top;
+}
+
+PackageEntry {
+    height: 3;
+    background: #2a2a2a;
+    margin: 1 0;
+    padding: 0 1;
+    border: tall transparent;
+    content-align: center middle;
+}
+
+.package_number {
+    width: 50%;
+    content-align: left middle;
+}
+
+.package_status {
+    width: 50%;
+    content-align: right middle;
+}
