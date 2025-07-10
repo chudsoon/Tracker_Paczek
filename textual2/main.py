@@ -1,4 +1,5 @@
 from textual.app import App, ComposeResult
+from textual.containers import Horizontal, Vertical
 
 from widgets.user_panel import UserPanel
 from widgets.package_list import PackageList
@@ -19,14 +20,22 @@ class TrackingApp(App):
     CSS_PATH = "styles.css"  # <- Ścieżka do osobnego pliku CSS
 
     def compose(self) -> ComposeResult:
-        if  token_extist():
-            yield UserPanel()
-            yield PackageList()
-        else: 
+        
+        yield Horizontal(
+            Vertical(id="left_panel"),
+            Vertical(id="right_panel")
+        )
+        
+        
+    async def on_mount(self) -> None:
+        if not token_extist():
             from widgets.login_panel import LoginPanel
             from widgets.welcome_panel import WelcomePanel
-            yield LoginPanel(id="LoginPanel")
-            yield WelcomePanel(id="WelcomePanel")
+            self.query_one("#left_panel").mount(LoginPanel(id="LoginPanel"))
+            self.query_one("#right_panel").mount(WelcomePanel(id="WelcomePanel"))
+        else:
+            self.query_one("#left_panel").mount(UserPanel(id="UserPanel"))
+            self.query_one("#right_panel").mount(PackageList(id="PackageList"))
 
 
 

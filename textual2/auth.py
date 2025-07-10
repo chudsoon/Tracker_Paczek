@@ -13,7 +13,7 @@ def token_save(data):
         json.dump(data, file, indent=4)
         
 def get_access_token():
-    if token_extist:
+    if token_extist():
         try:
             with open(TOKEN_FILE, "r") as file:
                 token = json.load(file)

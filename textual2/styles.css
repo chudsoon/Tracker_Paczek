@@ -5,10 +5,17 @@ Screen {
 }
 
 UserPanel {
-    width: 30%;
     padding: 2;
     background: #121212;
     border: tall #222222;
+}
+
+#left_panel {
+    width:30%;
+}
+
+#right_panel {
+    width: 70%;
 }
 
 .user_name {
