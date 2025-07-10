@@ -27,9 +27,7 @@ class RegistrationPanel(Vertical):
         if event.button.id == "register_button":
             
             self.register()
-            self.remove()
-            from widgets.login_panel import LoginPanel
-            self.app.query_one("#left_panel").mount(LoginPanel(id="LoginPanel"))    
+  
 
                 
                 
@@ -72,6 +70,9 @@ class RegistrationPanel(Vertical):
                 return
             
             self.app.notify("Zarejestrowano pomyślnie", severity="success")
+            self.remove()
+            from widgets.login_panel import LoginPanel
+            self.app.query_one("#left_panel").mount(LoginPanel(id="LoginPanel"))   
             
         except Exception as e:
             self.app.notify(f"Wystąpił bład rejestacji {e}", severity="error")
