@@ -1,5 +1,7 @@
 from pathlib import Path
 import json
+import os
+
 
 TOKEN_FILE = Path("token.json")
 
@@ -24,4 +26,9 @@ def get_access_token():
     else:
         access_token = None
 
+def remove_token():
+    if os.path.exists(TOKEN_FILE):
+        os.remove(TOKEN_FILE)
+    else:
+        return
   
