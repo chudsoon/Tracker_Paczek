@@ -1,16 +1,41 @@
 from textual.app import ComposeResult
 from textual.containers import Vertical, Horizontal
-from textual.widgets import Static,Label
+from textual.widgets import Static,Label, Button, Footer
+from textual.binding import Binding
+from auth import token_extist, get_access_token
+
+import httpx
+
+API_URL = "http://localhost:8000"
 
 class PackageList(Vertical):
     def compose(self) -> ComposeResult:
-        yield Static("Śledzenie przesyłek", classes="title")
-        yield PackageEntry("123456789", "W drodze")
-        yield PackageEntry("987654321", "Dostarczono")
-        yield PackageEntry("567890123", "Odebrano")
-        yield PackageEntry("246813579", "Odprawa celna")
-
-
+        self.load()
+        yield Static("", id="message")
+        
+    def load(self):
+        self.mount(Static("Znajdź przesyłkę", classes="title"))
+        try:
+            resp = httpx.get(f"{API_URL}/trackings/", params={"user_id": self.get_user_id()})
+            data = resp.json()
+            if not data:
+                self.mount(Static("Brak przesyłek"))
+                return
+            for t in data:
+                self.mount(Button(f"{t['number']} ({t['carrier']})", id=f"num-{t['number']}"))
+        except Exception as e:
+            self.mount(Static(f"[red]Błąd:[/] {e}"))
+            
+    def get_user_id(self):
+        if token_extist():
+            resp_me = httpx.get(f"{API_URL}/users/me", headers={"Authorization": f"Bearer {get_access_token()}"})
+            data = resp_me.json()
+            return int(data['id'])  
+        return None         
+            
+            
+            
+            
 class PackageEntry(Horizontal):
     def __init__(self, number: str, status: str):
         super().__init__()

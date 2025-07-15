@@ -13,14 +13,12 @@ API_URL = "http://localhost:8000"
 
 class LoginPanel(Vertical):
     def compose(self) -> ComposeResult:
-        yield Header()
         yield Static("Zaloguj się", classes="title")
         yield Input(placeholder="Podaj email...", id="email_input")
         yield Input(placeholder="Podaj hasło...", id="password_input", password=True)
         yield Button("Zaloguj", id="login_btn")
         yield Button("Nie masz konta? Zarejestruj się ", id="go_register")
         yield Static("", id="message")
-        yield Footer()
         
     async def on_button_pressed(self, event: Button.Pressed):
         

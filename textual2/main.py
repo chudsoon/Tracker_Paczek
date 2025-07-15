@@ -1,5 +1,7 @@
 from textual.app import App, ComposeResult
+from textual.widgets import Header, Footer
 from textual.containers import Horizontal, Vertical
+from textual.binding import Binding
 
 from widgets.user_panel import UserPanel
 from widgets.package_list import PackageList
@@ -18,13 +20,17 @@ from auth import token_extist
 
 class TrackingApp(App):
     CSS_PATH = "styles.css"  # <- Ścieżka do osobnego pliku CSS
+    BINDINGS = [Binding("d", "go_to_add", "Dodaj przesyłkę")]
+
 
     def compose(self) -> ComposeResult:
-        
+        yield Header()
+
         yield Horizontal(
             Vertical(id="left_panel"),
             Vertical(id="right_panel")
         )
+        yield Footer()
         
         
     async def on_mount(self) -> None:

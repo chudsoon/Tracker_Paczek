@@ -45,6 +45,12 @@ class UserPanel(Vertical):
         
     
     async def on_button_pressed(self, event: Button.Pressed):
+        if event.button.id == "add_package":
+            from widgets.add_tracking_panel import AddTrackingPanel
+            self.app.query_one("#right_panel").remove_children()
+            self.app.query_one("#right_panel").mount(AddTrackingPanel(id="AddTrackingPanel"))
+
+        
         if event.button.id == "logout":
             remove_token()
             self.remove()
@@ -54,3 +60,4 @@ class UserPanel(Vertical):
             self.app.query_one("#left_panel").mount(LoginPanel(id="LoginPanel"))
             self.app.query_one("#right_panel").mount(WelcomePanel(id="WelcomePanel"))
             self.app.notify(f"Wylogowano {self.user.email}")
+        

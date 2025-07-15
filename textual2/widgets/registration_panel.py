@@ -10,7 +10,6 @@ class RegistrationPanel(Vertical):
   
     
     def compose(self) -> ComposeResult:
-        yield Header()
         yield Static("Zarejestruj się", classes="title")
         yield Input(placeholder="Podaj nazwę uzytkownika...", id="full_name_input")
         yield Input(placeholder="Podaj adres email...", id="email_input")
@@ -19,19 +18,12 @@ class RegistrationPanel(Vertical):
         yield Button("Zarejestruj", id="register_button")
         yield Button("Anuluj", id="cancel_button")
         yield Static("", id="message")
-        yield Footer()
         
         
     async def on_button_pressed(self, event: Button.Pressed):
         
         if event.button.id == "register_button":
-            
             self.register()
-  
-
-                
-                
-            
         
         if event.button.id == "cancel_button":
             self.remove()
