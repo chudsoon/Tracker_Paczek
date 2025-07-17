@@ -14,7 +14,13 @@ class TrackingStatus(Vertical):
         self.tracking_id = tracking_id
     
     def compose(self) -> ComposeResult:
-        yield Static("Status przesyłki:", classes="title", id="title")
+        yield Static("Status przesyłki:", classes="title")
+        yield Static("Status przesyłki:", id="status")
+        yield Static("Paczkomat:", classes="title")
+        yield Static("Paczkomat:", id="target-machine")
+        yield Static("Lokalizacja:", classes="title")
+        yield Static("Lokalizacja:", id="location")
+        yield Static("Historia nadania:", classes="title")
         yield Static("Ładowanie...", id="status-area")
         yield Button("Odświez", id="refresh-btn")
         yield Button("Wróć do listy przesyłek", id="return-btn")
@@ -38,8 +44,13 @@ class TrackingStatus(Vertical):
             resp = httpx.get(f"{API_URL}/trackings/{self.tracking_id}/status")
             data = resp.json()
             
-            title = f"{data['tracking_number']} - {data['status']}"
-            self.app.query_one("#title", Static).update(title)
+            status = f"{data['tracking_number']} - {data['status']}"
+            target_machine = f"{data['custom_attributes']['target_machine_id']}"
+            location = f"{data['custom_attributes']['target_machine_detail']['location_description']}"
+            self.app.query_one("#status", Static).update(status)
+            self.app.query_one("#target-machine", Static).update(target_machine)
+            self.app.query_one("#location", Static).update(location)
+            
             
             history = data.get("tracking_details", [])
             if not history:
