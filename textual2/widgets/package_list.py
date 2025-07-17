@@ -39,7 +39,7 @@ class PackageList(Vertical):
             tracking_number = int(raw_id.split("-")[1])
             self.remove()
             from widgets.tracking_status import TrackingStatus
-            self.app.query_one("#right_panel").mount(TrackingStatus(id="TrackingStatus"))
+            self.app.query_one("#right_panel").mount(TrackingStatus(tracking_number))
             
             
             
