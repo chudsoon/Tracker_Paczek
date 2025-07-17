@@ -53,8 +53,8 @@ class UserPanel(Vertical):
         
         if event.button.id == "logout":
             remove_token()
-            self.remove()
-            self.app.query_one("#PackageList").remove()
+            self.app.query_one("#left_panel").remove_children()
+            self.app.query_one("#right_panel").remove_children()
             from widgets.login_panel import LoginPanel
             from widgets.welcome_panel import WelcomePanel
             self.app.query_one("#left_panel").mount(LoginPanel(id="LoginPanel"))
