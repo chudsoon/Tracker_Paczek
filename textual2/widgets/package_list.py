@@ -33,6 +33,15 @@ class PackageList(Vertical):
             return int(data['id'])  
         return None         
             
+    def on_button_pressed(self, event: Button.Pressed):
+        raw_id = event.button.id 
+        if raw_id.startswith("num-"):
+            tracking_number = int(raw_id.split("-")[1])
+            self.remove()
+            from widgets.tracking_status import TrackingStatus
+            self.app.query_one("#right_panel").mount(TrackingStatus(id="TrackingStatus"))
+            
+            
             
             
             
