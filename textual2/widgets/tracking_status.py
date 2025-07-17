@@ -18,6 +18,8 @@ class TrackingStatus(Vertical):
         yield Static("Ładowanie...", id="status-area")
         yield Button("Odświez", id="refresh-btn")
         yield Button("Wróć do listy przesyłek", id="return-btn")
+        
+    async def _on_mount(self) -> None:
         self.load_status()
 
         
@@ -41,7 +43,7 @@ class TrackingStatus(Vertical):
             
             history = data.get("tracking_details", [])
             if not history:
-                self.app.query_one("#status-area", Static).update("Brak historii przesyłki")
+                self.query_one("#status-area", Static).update("Brak historii przesyłki")
             else:
                 lines = [
                     f"[{item['datetime']}] {item['status']}"
