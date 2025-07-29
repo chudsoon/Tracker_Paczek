@@ -8,3 +8,11 @@ def  get_inpost_status(tracking_number: str) -> Optional[dict]:
     resp = httpx.get(url, timeout=10)
     resp.raise_for_status()
     return resp.json()
+
+def  get_inpost_statuses() -> Optional[dict]:
+    
+    
+    url = f"https://sandbox-api-shipx-pl.easypack24.net/v1/statuses"
+    resp = httpx.get(url, timeout=10)
+    resp.raise_for_status()
+    return resp.json()

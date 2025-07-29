@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas.tracking import TrackingCreate, TrackingOut
 from app.crud.tracking import create_tracking, get_trackings, get_trackings_by_user, get_tracking_by_id, remove_tracking
-from app.crud.inpost import get_inpost_status
+from app.crud.inpost import get_inpost_status, get_inpost_statuses
 from app.models.tracking import Tracking
 from app.db import SessionLocal, engine
 from app.db import Base
@@ -45,7 +45,28 @@ def get_tracking_status(tracking_number: str, db: Session = Depends(get_db)):
     if not tracking:
         raise HTTPException(404, "Tracking not found")
     if tracking.carrier == "Inpost":
-        return get_inpost_status(tracking.number)
+        tracking_data =  get_inpost_status(tracking.number)
+        statuses_data = get_inpost_statuses()
+        status_items = statuses_data.get("items", [])
+        try: 
+           statuses_titles = {status['name']: status['title'] for status in status_items}
+           statuses_descriptions = {status['name']: status['description'] for status in status_items}
+        except TypeError as e:
+            raise HTTPException(500, f"Błąd przetwarzania statusów: {e}")
+        
+        if not tracking_data:
+            raise HTTPException(404, "Brak statusu przesyłki")
+        
+        status_name = tracking_data.get("status")
+        status_title = statuses_titles.get(status_name, "Nieznany status")
+        status_description = statuses_descriptions.get(status_name, "Nieznany opis")
+        tracking_attributes = tracking_data.get("custom_attributes")
+        tracking_details = tracking_data.get("tracking_details")
+        
+        return {"tracking_number": tracking.number, "status": status_name, "title": status_title, "description": status_description, "target_machine_id": tracking_attributes['target_machine_id'], "location_description": tracking_attributes['target_machine_detail']['location_description'], "tracking_details": tracking_details}
+    
+    
+    
     raise HTTPException(400, "Unsupported carrier")
 
 

@@ -44,9 +44,9 @@ class TrackingStatus(Vertical):
             resp = httpx.get(f"{API_URL}/trackings/{self.tracking_id}/status")
             data = resp.json()
             
-            status = f"{data['tracking_number']} - {data['status']}"
-            target_machine = f"{data['custom_attributes']['target_machine_id']}"
-            location = f"{data['custom_attributes']['target_machine_detail']['location_description']}"
+            status = f"{data['tracking_number']} - {data['title']}"
+            target_machine = f"{data['target_machine_id']}"
+            location = f"{data['location_description']}"
             self.app.query_one("#status", Static).update(status)
             self.app.query_one("#target-machine", Static).update(target_machine)
             self.app.query_one("#location", Static).update(location)
