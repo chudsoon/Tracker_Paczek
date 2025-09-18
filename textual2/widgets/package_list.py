@@ -1,12 +1,16 @@
+from textual import on
 from textual.app import ComposeResult
 from textual.containers import Vertical, Horizontal
-from textual.widgets import Static,Label, Button, Footer
+from textual.widgets import Static,Label, Button, Footer, RadioButton
 from textual.binding import Binding
 from auth import token_extist, get_access_token
 
 import httpx
 
 API_URL = "http://localhost:8000"
+
+
+
 
 class PackageList(Vertical):
     def compose(self) -> ComposeResult:
@@ -22,9 +26,10 @@ class PackageList(Vertical):
                 self.mount(Static("Brak przesyłek"))
                 return
             for t in data:
-                self.mount(Button(f"{t['number']} ({t['carrier']})", id=f"num-{t['number']}"))
+                self.mount(RadioButton(f"{t['number']} ({t['carrier']})", id=f"num-{t['number']}"))
         except Exception as e:
             self.mount(Static(f"[red]Błąd:[/] {e}"))
+        self.mount(Button("Szczegóły przesyłki", id="btn-parcel-deatails"))
             
     def get_user_id(self):
         if token_extist():
@@ -34,23 +39,32 @@ class PackageList(Vertical):
         return None         
             
     def on_button_pressed(self, event: Button.Pressed):
-        raw_id = event.button.id 
-        if raw_id.startswith("num-"):
-            tracking_number = int(raw_id.split("-")[1])
-            self.remove()
-            from widgets.tracking_status import TrackingStatus
-            self.app.query_one("#right_panel").mount(TrackingStatus(tracking_number))
+        if event.button.id == "btn-parcel-deatails":
+            tracking_number = self.get_selected()
+            if tracking_number:
+                tracking_number
+                self.remove()
+                from widgets.tracking_status import TrackingStatus
+                self.app.query_one("#right_panel").mount(TrackingStatus(tracking_number))
+            
+    @on(RadioButton.Changed)
+    def only_one_checked(self, event: RadioButton.Changed) -> None:
+        # Ensuring that only one RadioButton is checked
+        if event.radio_button.value: #checked
+            event.radio_button.value = True 
+            # Unchecked all other radio buttons
+            for rb in self.query(RadioButton):
+                if rb is not event.radio_button:
+                    rb.value = False
+    
+    def get_selected(self):
+        # Returns the number of the parcel
+        for rb in self.query(RadioButton):
+            if rb.value:
+                return rb.id.split("-")[1]
+        return None
             
             
             
             
-            
-class PackageEntry(Horizontal):
-    def __init__(self, number: str, status: str):
-        super().__init__()
-        self.number = number
-        self.status = status
-
-    def compose(self) -> ComposeResult:
-        yield Label(self.number, classes="package_number")
-        yield Label(self.status, classes="package_status")
+        

@@ -33,7 +33,7 @@ class AdminPanel(Vertical):
                 self.mount(Static("Brak uzytkowników"))
                 return
             for u in data: 
-                self.mount(Button(f"{['full_name']}"))
+                self.mount(Button(f"{u['full_name']}"))
         except Exception as e:
             self.mount(Static(f"[red]Błąd:[/] {e}"))
             

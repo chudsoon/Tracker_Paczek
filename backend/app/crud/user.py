@@ -26,7 +26,7 @@ def authenticate_user(db: Session, email: str, password: str):
     return user
 
 def get_users(db: Session, current_user: User = Depends(get_current_user)):
-    if not current_user.is_admin:
+    if  current_user.is_admin:
         raise HTTPException(status_code=403, detail="Insuficient credentialas to get this data")
     return db.query(User).all()
     

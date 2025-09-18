@@ -29,7 +29,7 @@ UserPanel {
     color: #cccccc;
 }
 
-#add_package, #admin_panel, #logout {
+#add_package, #user_profile, #admin_panel, #logout {
     margin-top: 1;
     background: #333333;
     border: round #555555;
@@ -40,6 +40,15 @@ PackageList {
     width: 70%;
     padding: 2;
 }
+
+PackageList RadioButton {
+    color: white ;
+    border: white;
+    
+}
+
+
+
 
 .title {
     text-style: bold;

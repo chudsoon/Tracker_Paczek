@@ -3,7 +3,7 @@ from textual.widgets import Header, Footer
 from textual.containers import Horizontal, Vertical
 from textual.binding import Binding
 
-from widgets.user_panel import UserPanel
+from widgets.menu_panel import MenuPanel
 from widgets.package_list import PackageList
 
 
@@ -40,7 +40,7 @@ class TrackingApp(App):
             self.query_one("#left_panel").mount(LoginPanel(id="LoginPanel"))
             self.query_one("#right_panel").mount(WelcomePanel(id="WelcomePanel"))
         else:
-            self.query_one("#left_panel").mount(UserPanel(id="UserPanel"))
+            self.query_one("#left_panel").mount(MenuPanel(id="MenuPanel"))
             self.query_one("#right_panel").mount(PackageList(id="PackageList"))
 
 
