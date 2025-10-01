@@ -35,14 +35,15 @@ class MenuPanel(Vertical):
             
     
     def compose(self) -> ComposeResult:
-        user = self.get_user_info()
-        yield Static(user.full_name, classes="user_name")
-        yield Static(user.email, classes="user_email")
-        yield Static("rola: Client", classes="user_role")
-        yield Button("DODAJ PRZESYŁKĘ", id="add_package")
-        yield Button("TWÓJ PROFIL", id="user_profile")
-        yield Button("PANEL ADMINISTRATORA", id="admin_panel")
-        yield Button("WYLOGUJ", id="logout")
+        if self.get_user_info():
+            user = self.get_user_info()
+            yield Static(user.full_name, classes="user_name")
+            yield Static(user.email, classes="user_email")
+            yield Static("rola: Client", classes="user_role")
+            yield Button("DODAJ PRZESYŁKĘ", id="add_package")
+            yield Button("TWÓJ PROFIL", id="user_profile")
+            yield Button("PANEL ADMINISTRATORA", id="admin_panel")
+            yield Button("WYLOGUJ", id="logout")
         
     
     async def on_button_pressed(self, event: Button.Pressed):

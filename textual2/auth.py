@@ -2,6 +2,7 @@ from pathlib import Path
 import json
 import os
 
+import httpx
 
 TOKEN_FILE = Path("token.json")
 
@@ -20,6 +21,8 @@ def get_access_token():
             with open(TOKEN_FILE, "r") as file:
                 token = json.load(file)
             access_token = token['access_token']
+    
+            
             return access_token
         except(json.JSONDecodeError, KeyError):
             access_token = None
@@ -31,4 +34,5 @@ def remove_token():
         os.remove(TOKEN_FILE)
     else:
         return
-  
+
+

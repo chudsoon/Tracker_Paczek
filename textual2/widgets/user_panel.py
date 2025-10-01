@@ -25,9 +25,9 @@ class UserPanel(Vertical):
             data = resp_me.json()
             self.user.full_name = data['full_name']
             self.user.email = data['email']
-            return self.user
-            
-        else:
+            return self.user   
+        elif resp_me.status_code == 401:
+            #remove_token()
             self.app.notify("Niezalogowano", severity="error")
             
 

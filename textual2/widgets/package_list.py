@@ -30,6 +30,7 @@ class PackageList(Vertical):
         except Exception as e:
             self.mount(Static(f"[red]Błąd:[/] {e}"))
         self.mount(Button("Szczegóły przesyłki", id="btn-parcel-deatails"))
+        self.mount(Button("Usuń przesyłkę", id="btn-delete-tracking"))
             
     def get_user_id(self):
         if token_extist():
@@ -46,6 +47,8 @@ class PackageList(Vertical):
                 self.remove()
                 from widgets.tracking_status import TrackingStatus
                 self.app.query_one("#right_panel").mount(TrackingStatus(tracking_number))
+        if event.button.id == "btn-delete-tracking":
+            pass
             
     @on(RadioButton.Changed)
     def only_one_checked(self, event: RadioButton.Changed) -> None:
